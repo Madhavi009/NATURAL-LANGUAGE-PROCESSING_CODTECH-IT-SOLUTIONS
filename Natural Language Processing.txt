@@ -1,0 +1,146 @@
+NATURAL LANGUAGE PROCESSING (NLP)
+
+Natural Language Processing (NLP) is a field of AI focused on enabling
+computers to understand, interpret, and generate human language. This
+task involves working on a specific NLP problem, such as sentiment analysis or text Classification
+
+
+!pip install nltk
+!pip install textblob
+!python -m textblob.download_corpora
+[20-06-2024 10:55 PM] : import nltk
+from textblob import TextBlob
+nltk.download('punkt')
+[20-06-2024 10:59 PM] : import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+
+# Sample DataFrame creation (replace this with your dataset)
+data = {
+    'age': [25, 30, 35, np.nan, 45, 50, 55, 60, 65, 70],
+    'salary': [50000, 54000, 58000, 62000, 66000, np.nan, 74000, 78000, 82000, 86000],
+    'department': ['sales', 'engineering', 'engineering', 'sales', np.nan, 'engineering', 'hr', 'hr', 'sales', 'sales']
+}
+df = pd.DataFrame(data)
+
+# Handle missing values
+imputer = SimpleImputer(strategy='mean')
+df['age'] = imputer.fit_transform(df[['age']])
+df['salary'] = imputer.fit_transform(df[['salary']])
+df['department'].fillna(df['department'].mode()[0], inplace=True)
+
+# Encoding categorical variables
+df = pd.get_dummies(df, columns=['department'], drop_first=True)
+
+# Splitting data into features and target variable
+X = df.drop('salary', axis=1)
+y = df['salary']
+
+# Splitting the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Feature Scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Output
+print("\nTraining Features Before Scaling:\n", X_train)
+print("\nTraining Features After Scaling:\n", X_train_scaled)
+print("\nTesting Features Before Scaling:\n", X_test)
+print("\nTesting Features After Scaling:\n", X_test_scaled)
+[20-06-2024 11:02 PM] : def analyzesentiment(text):
+    # Create a TextBlob object
+    blob = TextBlob(text)
+    
+    # Get the sentiment polarity
+    polarity = blob.sentiment.polarity
+    
+    # Determine the sentiment
+    if polarity > 0:
+        sentiment = 'Positive'
+    elif polarity < 0:
+        sentiment = 'Negative'
+    else:
+        sentiment = 'Neutral'
+    
+    return sentiment, polarity
+[20-06-2024 11:02 PM] : sample_texts = [
+    "I love this product! It's amazing.",
+    "I hate this! It's the worst purchase I've ever made.",
+    "It's okay, not great but not terrible either."
+]
+
+for text in sample_texts:
+    sentiment, polarity = analyze_sentiment(text)
+    print(f"Text: {text}")
+    print(f"Sentiment: {sentiment}, Polarity: {polarity}")
+    print()
+[20-06-2024 11:03 PM] : import pandas as pd
+from textblob import TextBlob
+import nltk
+
+# Create a sample dataset
+data = {
+    'text': [
+        "I love this product! It's amazing.",
+        "I hate this! It's the worst purchase I've ever made.",
+        "It's okay, not great but not terrible either.",
+        "Absolutely fantastic! Would buy again.",
+        "Terrible quality, very disappointed.",
+        "I'm not sure how I feel about this.",
+        "Exceeded my expectations in every way.",
+        "Broke after a week, not worth the money.",
+        "Pretty decent overall.",
+        "Highly recommend to everyone!"
+    ]
+}
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Save the DataFrame to a CSV file
+df.to_csv('dataset.csv', index=False)
+
+# Install required libraries
+!pip install nltk
+!pip install textblob
+!python -m textblob.download_corpora
+
+# Import necessary libraries and download resources
+nltk.download('punkt')
+
+# Define the sentiment analysis function
+def analyze_sentiment(text):
+    blob = TextBlob(text)
+    polarity = blob.sentiment.polarity
+    if polarity > 0:
+        sentiment = 'Positive'
+    elif polarity < 0:
+        sentiment = 'Negative'
+    else:
+        sentiment = 'Neutral'
+    return sentiment, polarity
+
+# Load dataset
+df = pd.read_csv('dataset.csv')
+
+# Apply sentiment analysis to each text
+df['sentiment'], df['polarity'] = zip(*df['text'].apply(analyze_sentiment))
+
+# Display the first few rows of the dataframe
+print(df.head())
+
+# Save the results to a new CSV file
+df.to_csv('sentiment_analysis_results.csv', index=False)
+[20-06-2024 11:03 PM] : # Load dataset
+df = pd.read_csv('dataset.csv')
+
+# Apply sentiment analysis to each text
+df['sentiment'], df['polarity'] = zip(*df['text'].apply(analyze_sentiment))
+
+# Display the first few rows of the dataframe
+print(df.head())
+[20-06-2024 11:03 PM] : df.to_csv('sentiment_analysis_results.csv', index=False)
